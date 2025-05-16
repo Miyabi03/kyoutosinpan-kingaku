@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>お支払いシミュレーション | 京都信販株式会社</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .header {
+            background-color: #2a74d0;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .result-box {
+            background-color: #f0f7ff;
+            border: 1px solid #2a74d0;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+
+        button {
+            background-color: #2a74d0;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1e5ba6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>お支払いシミュレーション</h2>
+    </div>
+
+    <label for="price">金額（円）:</label>
+    <input type="number" id="price" required>
+
+    <label for="interest">実質年率（%）:</label>
+    <input type="number" id="interest" value="20" required>
+
+    <label for="date">記入面談日:</label>
+    <input type="date" id="date" required>
+
+    <button onclick="calculateFee()">計算する</button>
+
+    <div class="result-box" id="result">
+        手数料: - 円<br>
+        初回支払日: -
+    </div>
+
+    <script>
+        function calculateFee() {
+            const price = parseFloat(document.getElementById('price').value);
+            const interest = parseFloat(document.getElementById('interest').value) / 100;
+            const selectedDate = new Date(document.getElementById('date').value);
+            
+            if (isNaN(price) || isNaN(interest) || !selectedDate) {
+                alert('全ての項目を正しく入力してください。');
+                return;
+            }
+
+            const fee = Math.round(price * interest);
+            document.getElementById('result').innerHTML = `手数料: ${fee.toLocaleString()} 円<br>初回支払日: ${calculateFirstPaymentDate(selectedDate)}`;
+        }
+
+        function calculateFirstPaymentDate(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const day = date.getDate();
+
+            let paymentMonth = month;
+            if (day >= 15) {
+                paymentMonth++;
+            }
+
+            const paymentDate = new Date(year, paymentMonth, 27);
+            const formattedDate = `${paymentDate.getFullYear()}年${paymentDate.getMonth() + 1}月27日`;
+
+            return formattedDate;
+        }
+    </script>
+</body>
+</html>
